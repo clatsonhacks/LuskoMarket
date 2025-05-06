@@ -1,9 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Import necessary dependencies
-    // Note: Make sure to include these in your HTML
-    // <script src="https://cdn.ethers.io/lib/ethers-5.7.umd.min.js" type="text/javascript"></script>
-    // <script src="https://cdn.jsdelivr.net/npm/@lukso/universalprofile-sdk@0.0.16/dist/universalprofile-sdk.min.js"></script>
-    
     // Contract addresses from your deployment
     const PREDICTION_MARKET_ADDRESS = '0x039874bC68d71F4b6c20809850F963A57F5b49a7';
     const AI_RESOLVER_ADDRESS = '0x084A86593f882BacEEa616388569E6721fCd64cb';
@@ -48,11 +43,11 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentAccount = null;
     let currentFilter = 'active';
     let currentMarket = null;
-    let provider;
-    let signer;
+    let web3;
     let predictionMarketContract;
     let aiResolverContract;
     let selectedTradeType = 'yes';
+    let availableProviders = [];
     
     // DOM Elements
     const connectButton = document.getElementById('connectButton');
@@ -67,11 +62,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const tradeTypeButtons = document.querySelectorAll('.trade-btn');
     const tabButtons = document.querySelectorAll('.tab');
     const tabContents = document.querySelectorAll('.tab-content');
-    const executeTradeBtn = document.getElementById('executeTrade'); // Renamed this variable
+    const executeTradeBtn = document.getElementById('executeTrade');
     const addLiquidityBtn = document.getElementById('addLiquidity');
     const claimRewardsBtn = document.getElementById('claimRewards');
     
-    // ABI for the contracts - using ethers.js format
+    // ABI for the contracts
     const predictionMarketABI = [
         {
             "inputs": [
@@ -239,62 +234,85 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     ];
 
+    // EIP-6963 wallet connection setup
+    window.addEventListener("eip6963:announceProvider", (event) => {
+        availableProviders.push(event.detail);
+    });
+
+    // Dispatch event to request providers
+    function requestEIP6963Providers() {
+        window.dispatchEvent(new Event("eip6963:requestProvider"));
+    }
+
     // Connect to LUKSO Universal Profile wallet
     async function connectWallet() {
         try {
-            // Check if provider exists (EIP-1193)
-            if (window.ethereum) {
-                // Use ethers.js instead of Web3.js for better compatibility with LUKSO
-                const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
-                
-                // Request account access
-                await provider.send('eth_requestAccounts', []);
-                
-                const signer = provider.getSigner();
-                currentAccount = await signer.getAddress();
-                
-                // Check if the connected account is a LUKSO Universal Profile
-                try {
-                    // Initialize Universal Profile
-                    const universalProfile = new UniversalProfile.UniversalProfile({
-                        address: currentAccount,
-                        provider: provider
-                    });
+            // First, try EIP-6963 providers (LUKSO compatible)
+            requestEIP6963Providers();
+            
+            // Give providers a moment to announce themselves
+            setTimeout(async () => {
+                if (availableProviders.length > 0) {
+                    // Use the first available provider
+                    const providerDetail = availableProviders[0];
                     
-                    // Fetch profile data (this confirms it's a valid UP)
-                    const profileData = await universalProfile.getProfile();
-                    console.log('Universal Profile connected:', profileData);
-                    
-                    // Update UI
-                    connectButton.classList.add('hidden');
-                    profileInfo.classList.remove('hidden');
-                    addressDisplay.textContent = `${currentAccount.substring(0, 6)}...${currentAccount.substring(currentAccount.length - 4)}`;
-                    
-                    // Initialize contracts using ethers.js
-                    predictionMarketContract = new ethers.Contract(
-                        PREDICTION_MARKET_ADDRESS,
-                        predictionMarketABI,
-                        signer
-                    );
-                    
-                    // Show notification
-                    showNotification('LUKSO Universal Profile connected successfully!', 'success');
-                    
-                    // Refresh markets list with connected account
-                    renderMarkets();
-                    
-                    return { signer, address: currentAccount, universalProfile };
-                } catch (profileError) {
-                    console.error('Not a valid Universal Profile:', profileError);
-                    showNotification('Please connect with a valid LUKSO Universal Profile', 'error');
+                    try {
+                        web3 = new Web3(providerDetail.provider);
+                        const accounts = await web3.eth.requestAccounts();
+                        
+                        if (accounts.length > 0) {
+                            handleSuccessfulConnection(accounts[0]);
+                            showNotification(`Connected to ${providerDetail.info.name}!`, 'success');
+                        }
+                    } catch (err) {
+                        console.error("EIP-6963 connection error:", err);
+                        fallbackToLegacyConnection();
+                    }
+                } else {
+                    // Fall back to traditional connection method
+                    fallbackToLegacyConnection();
                 }
-            } else {
-                showNotification('LUKSO wallet not found. Please install the browser extension.', 'error');
-            }
+            }, 500); // Short delay to collect providers
         } catch (error) {
             console.error('Connection error:', error);
             showNotification('Connection failed. Please try again.', 'error');
         }
+    }
+    
+    // Fallback to legacy window.ethereum connection
+    async function fallbackToLegacyConnection() {
+        try {
+            if (window.ethereum) {
+                web3 = new Web3(window.ethereum);
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                
+                if (accounts.length > 0) {
+                    handleSuccessfulConnection(accounts[0]);
+                    showNotification('Connected successfully!', 'success');
+                }
+            } else {
+                showNotification('Please install a LUKSO-compatible wallet', 'error');
+            }
+        } catch (error) {
+            console.error("Legacy connection error:", error);
+            showNotification('Connection failed. Please try again.', 'error');
+        }
+    }
+    
+    // Handle successful wallet connection
+    function handleSuccessfulConnection(account) {
+        currentAccount = account;
+        
+        // Update UI
+        connectButton.classList.add('hidden');
+        profileInfo.classList.remove('hidden');
+        addressDisplay.textContent = `${account.substring(0, 6)}...${account.substring(account.length - 4)}`;
+        
+        // Initialize contract
+        predictionMarketContract = new web3.eth.Contract(predictionMarketABI, PREDICTION_MARKET_ADDRESS);
+        
+        // Refresh markets
+        renderMarkets();
     }
 
     // Create a new market
@@ -502,7 +520,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Execute trade function
-    async function handleTrade() { // Renamed the function to avoid conflict
+    async function handleTrade() {
         if (!currentAccount || !currentMarket) {
             showNotification('Please connect your wallet and select a market', 'error');
             return;
@@ -650,7 +668,7 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', () => switchTab(button.dataset.tab));
     });
     
-    executeTradeBtn.addEventListener('click', handleTrade); // Updated this line to use the renamed function
+    executeTradeBtn.addEventListener('click', handleTrade);
     addLiquidityBtn.addEventListener('click', addLiquidity);
     claimRewardsBtn.addEventListener('click', claimRewards);
     
