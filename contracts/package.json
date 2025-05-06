@@ -1,0 +1,23 @@
+{
+  "name": "lsp-remix-project",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "description": "",
+  "dependencies": {
+    "@erc725/smart-contracts-v8": "npm:@erc725/smart-contracts@8.0.0",
+    "@erc725/smart-contracts": "^7.0.0",
+    "@openzeppelin/contracts": "^4.9.3",
+    "@lukso/lsp1-contracts": "~0.15.0",
+    "@lukso/lsp2-contracts": "~0.15.0",
+    "@lukso/lsp14-contracts": "~0.15.0",
+    "@lukso/lsp17contractextension-contracts": "~0.15.0",
+    "@lukso/lsp20-contracts": "~0.15.0"
+  }
+}
