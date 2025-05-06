@@ -79,4 +79,4 @@ MIT
 
 ---
 
-*Built for the **LUKSO Hackathon** *
+Built for the **LUKSO Hackathon**
