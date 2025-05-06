@@ -1,0 +1,421 @@
+:root {
+    --primary-color: #0063ff;
+    --secondary-color: #00d1b2;
+    --yes-color: #00d1b2;
+    --no-color: #f14668;
+    --text-color: #333;
+    --light-bg: #f5f5f5;
+    --dark-bg: #333;
+    --card-bg: #fff;
+    --border-color: #ddd;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  body {
+    background-color: var(--light-bg);
+    color: var(--text-color);
+    line-height: 1.6;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .logo h1 {
+    font-size: 24px;
+    color: var(--primary-color);
+  }
+  
+  .logo p {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .connect-wallet button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .connect-wallet button:hover {
+    background-color: #0052d4;
+  }
+  
+  .hidden {
+    display: none !important;
+  }
+  
+  /* Forms */
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+  }
+  
+  button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  button:hover {
+    background-color: #0052d4;
+  }
+  
+  /* Market sections */
+  section {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .markets-filter {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  
+  .markets-filter button {
+    background-color: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    margin-right: 10px;
+    padding: 8px 16px;
+  }
+  
+  .markets-filter button.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+  }
+  
+  .market-card {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  
+  .market-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .market-question {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .market-meta {
+    display: flex;
+    justify-content: space-between;
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+  
+  .market-probabilities {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .probability {
+    text-align: center;
+    padding: 10px;
+    border-radius: 4px;
+    flex: 1;
+  }
+  
+  .probability.yes {
+    background-color: rgba(0, 209, 178, 0.1);
+    color: var(--yes-color);
+    margin-right: 5px;
+  }
+  
+  .probability.no {
+    background-color: rgba(241, 70, 104, 0.1);
+    color: var(--no-color);
+    margin-left: 5px;
+  }
+  
+  .probability .label {
+    font-weight: bold;
+    display: block;
+  }
+  
+  .probability .value {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  /* Market detail */
+  .market-back {
+    margin-bottom: 20px;
+  }
+  
+  .market-back button {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    padding: 5px 10px;
+  }
+  
+  .market-header h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .market-odds {
+    display: flex;
+    margin: 20px 0;
+  }
+  
+  .yes-odds, .no-odds {
+    flex: 1;
+    text-align: center;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  .yes-odds {
+    background-color: rgba(0, 209, 178, 0.1);
+    margin-right: 10px;
+  }
+  
+  .no-odds {
+    background-color: rgba(241, 70, 104, 0.1);
+    margin-left: 10px;
+  }
+  
+  .odds {
+    font-size: 32px;
+    font-weight: bold;
+    display: block;
+    margin-top: 5px;
+  }
+  
+  .label {
+    font-weight: bold;
+  }
+  
+  /* Trade panel */
+  .tabs {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  
+  .tab {
+    padding: 10px 20px;
+    background-color: transparent;
+    color: var(--text-color);
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-weight: bold;
+  }
+  
+  .tab.active {
+    border-bottom: 2px solid var(--primary-color);
+    color: var(--primary-color);
+  }
+  
+  .tab-content {
+    display: none;
+    padding: 20px;
+    background-color: var(--light-bg);
+    border-radius: 8px;
+  }
+  
+  .tab-content.active {
+    display: block;
+  }
+  
+  .trade-type {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  
+  .trade-btn {
+    flex: 1;
+    padding: 10px;
+    margin: 0 5px;
+    font-weight: bold;
+  }
+  
+  .trade-btn.active[data-type="yes"] {
+    background-color: var(--yes-color);
+  }
+  
+  .trade-btn.active[data-type="no"] {
+    background-color: var(--no-color);
+  }
+  
+  .trade-input, .liquidity-input {
+    margin-bottom: 20px;
+  }
+  
+  .trade-input label, .liquidity-input label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .trade-input input, .liquidity-input input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+  }
+  
+  .trade-estimate {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
+  }
+  
+  /* Market positions */
+  .market-positions {
+    margin-top: 30px;
+  }
+  
+  .position-data {
+    background-color: var(--light-bg);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 10px;
+  }
+  
+  .position-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .position-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+  
+  /* Market resolution */
+  .market-resolution {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: var(--light-bg);
+    border-radius: 8px;
+  }
+  
+  .resolution-status {
+    margin-bottom: 20px;
+  }
+  
+  .ai-analysis {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 10px;
+    border: 1px solid var(--border-color);
+  }
+  
+  #claimRewards {
+    margin-top: 20px;
+    background-color: var(--secondary-color);
+  }
+  
+  /* Notifications */
+  .notification-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+  }
+  
+  .notification {
+    background-color: white;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid var(--primary-color);
+    animation: slideIn 0.3s ease-out;
+  }
+  
+  .notification.success {
+    border-left-color: var(--yes-color);
+  }
+  
+  .notification.error {
+    border-left-color: var(--no-color);
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  /* Loading */
+  .loading {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+  }
+  
+  /* Profile info */
+  #profileInfo {
+    background-color: var(--light-bg);
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  #address {
+    font-weight: bold;
+  }

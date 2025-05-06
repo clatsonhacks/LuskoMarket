@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUKSO Prediction Market</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.8.2/web3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>LUKSO Prediction Market</h1>
+                <p>Powered by Universal Profiles & Groq AI</p>
+            </div>
+            <div class="connect-wallet">
+                <button id="connectButton">Connect LUKSO Profile</button>
+                <div id="profileInfo" class="hidden">
+                    <span id="address"></span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <section class="create-market">
+                <h2>Create Prediction Market</h2>
+                <form id="createMarketForm">
+                    <div class="form-group">
+                        <label for="question">Question</label>
+                        <input type="text" id="question" placeholder="e.g., Will BTC reach $100k by end of 2025?" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="duration">Duration (days)</label>
+                        <input type="number" id="duration" min="1" max="365" value="30" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="details">Market Details</label>
+                        <textarea id="details" placeholder="Provide additional details about this market" rows="4"></textarea>
+                    </div>
+                    <button type="submit">Create Market</button>
+                </form>
+            </section>
+
+            <section class="markets">
+                <h2>Active Markets</h2>
+                <div class="markets-filter">
+                    <button class="active" data-filter="active">Active</button>
+                    <button data-filter="resolved">Resolved</button>
+                    <button data-filter="my">My Markets</button>
+                </div>
+                <div id="marketsList" class="markets-list">
+                    <!-- Markets will be populated here -->
+                    <div class="loading">Loading markets...</div>
+                </div>
+            </section>
+
+            <section id="marketDetail" class="market-detail hidden">
+                <div class="market-back">
+                    <button id="backToMarkets">← Back to Markets</button>
+                </div>
+                <div class="market-header">
+                    <h2 id="marketQuestion"></h2>
+                    <div class="market-meta">
+                        <span id="marketCreator"></span>
+                        <span id="marketExpiry"></span>
+                    </div>
+                </div>
+
+                <div class="market-odds">
+                    <div class="yes-odds">
+                        <span class="label">YES</span>
+                        <span id="yesOdds" class="odds">--%</span>
+                    </div>
+                    <div class="no-odds">
+                        <span class="label">NO</span>
+                        <span id="noOdds" class="odds">--%</span>
+                    </div>
+                </div>
+
+                <div class="trade-panel">
+                    <div class="tabs">
+                        <button class="tab active" data-tab="trade">Trade</button>
+                        <button class="tab" data-tab="liquidity">Add Liquidity</button>
+                    </div>
+                    
+                    <div id="tradeTab" class="tab-content active">
+                        <div class="trade-type">
+                            <button class="trade-btn active" data-type="yes">YES</button>
+                            <button class="trade-btn" data-type="no">NO</button>
+                        </div>
+                        <div class="trade-input">
+                            <label>Amount (LYX)</label>
+                            <input type="number" id="tradeAmount" min="0.01" step="0.01" value="0.1">
+                            <div class="trade-estimate">
+                                Estimated shares: <span id="estimatedShares">0</span>
+                            </div>
+                        </div>
+                        <button id="executeTrade">Execute Trade</button>
+                    </div>
+                    
+                    <div id="liquidityTab" class="tab-content">
+                        <div class="liquidity-input">
+                            <label>Amount to provide (LYX)</label>
+                            <input type="number" id="liquidityAmount" min="0.01" step="0.01" value="0.5">
+                        </div>
+                        <button id="addLiquidity">Add Liquidity</button>
+                    </div>
+                </div>
+
+                <div class="market-positions">
+                    <h3>Your Positions</h3>
+                    <div class="position-data">
+                        <div class="position-item">
+                            <span class="label">YES Shares:</span>
+                            <span id="yesSharesPosition">0</span>
+                        </div>
+                        <div class="position-item">
+                            <span class="label">NO Shares:</span>
+                            <span id="noSharesPosition">0</span>
+                        </div>
+                        <div class="position-item">
+                            <span class="label">Liquidity Provided:</span>
+                            <span id="liquidityPosition">0 LYX</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="marketResolution" class="market-resolution hidden">
+                    <h3>Market Resolution</h3>
+                    <div class="resolution-status">
+                        Status: <span id="resolutionStatus">Pending</span>
+                    </div>
+                    <div class="ai-resolution">
+                        <h4>AI Resolution Details</h4>
+                        <div id="aiAnalysis" class="ai-analysis">
+                            AI analysis will be shown here when available...
+                        </div>
+                    </div>
+                    <button id="claimRewards" class="hidden">Claim Rewards</button>
+                </div>
+            </section>
+        </main>
+
+        <div id="notificationContainer" class="notification-container"></div>
+    </div>
+
+    <script src="app.js"></script>
+    <script src="ai-resolver.js"></script>
+</body>
+</html>
